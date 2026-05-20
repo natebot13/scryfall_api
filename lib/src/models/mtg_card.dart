@@ -89,7 +89,7 @@ class MtgCard {
   /// This value is consistent across reprinted card editions,
   /// and unique among different cards with the same name (tokens,
   /// Unstable variants, etc).
-  final String oracleId;
+  final String? oracleId;
 
   /// A link to where you can begin paginating all re/prints for
   /// this card on Scryfall’s API.
@@ -114,7 +114,7 @@ class MtgCard {
 
   /// The card’s converted mana cost. Note that some funny cards
   /// have fractional mana costs.
-  final double cmc;
+  final double? cmc;
 
   /// This card’s color identity.
   @JsonKey(unknownEnumValue: Color.unknown)
@@ -203,7 +203,7 @@ class MtgCard {
   final String? toughness;
 
   /// The type line of this card.
-  final String typeLine;
+  final String? typeLine;
 
   /// The name of the illustrator of this card.
   ///
@@ -386,7 +386,7 @@ class MtgCard {
     this.tcgplayerId,
     this.tcgplayerEtchedId,
     this.cardmarketId,
-    required this.oracleId,
+    this.oracleId,
     required this.printsSearchUri,
     required this.rulingsUri,
     required this.scryfallUri,

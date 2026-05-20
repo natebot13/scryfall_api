@@ -31,7 +31,7 @@ MtgCard _$MtgCardFromJson(Map<String, dynamic> json) => $checkedCreate(
               'tcgplayer_etched_id', (v) => (v as num?)?.toInt()),
           cardmarketId:
               $checkedConvert('cardmarket_id', (v) => (v as num?)?.toInt()),
-          oracleId: $checkedConvert('oracle_id', (v) => v as String),
+          oracleId: $checkedConvert('oracle_id', (v) => v as String?),
           printsSearchUri: $checkedConvert(
               'prints_search_uri', (v) => Uri.parse(v as String)),
           rulingsUri:
@@ -49,7 +49,7 @@ MtgCard _$MtgCardFromJson(Map<String, dynamic> json) => $checkedCreate(
               (v) => (v as List<dynamic>?)
                   ?.map((e) => CardFace.fromJson(e as Map<String, dynamic>))
                   .toList()),
-          cmc: $checkedConvert('cmc', (v) => (v as num).toDouble()),
+          cmc: $checkedConvert('cmc', (v) => (v as num?)?.toDouble()),
           colorIdentity: $checkedConvert(
               'color_identity',
               (v) => (v as List<dynamic>)
@@ -94,7 +94,7 @@ MtgCard _$MtgCardFromJson(Map<String, dynamic> json) => $checkedCreate(
                   .toList()),
           reserved: $checkedConvert('reserved', (v) => v as bool),
           toughness: $checkedConvert('toughness', (v) => v as String?),
-          typeLine: $checkedConvert('type_line', (v) => v as String),
+          typeLine: $checkedConvert('type_line', (v) => v as String?),
           artist: $checkedConvert('artist', (v) => v as String?),
           artistIds: $checkedConvert('artist_ids',
               (v) => (v as List<dynamic>?)?.map((e) => e as String).toList()),
@@ -274,7 +274,7 @@ Map<String, dynamic> _$MtgCardToJson(MtgCard instance) => <String, dynamic>{
       if (instance.tcgplayerEtchedId case final value?)
         'tcgplayer_etched_id': value,
       if (instance.cardmarketId case final value?) 'cardmarket_id': value,
-      'oracle_id': instance.oracleId,
+      if (instance.oracleId case final value?) 'oracle_id': value,
       'prints_search_uri': instance.printsSearchUri.toString(),
       'rulings_uri': instance.rulingsUri.toString(),
       'scryfall_uri': instance.scryfallUri.toString(),
@@ -283,7 +283,7 @@ Map<String, dynamic> _$MtgCardToJson(MtgCard instance) => <String, dynamic>{
         'all_parts': value,
       if (instance.cardFaces?.map((e) => e.toJson()).toList() case final value?)
         'card_faces': value,
-      'cmc': instance.cmc,
+      if (instance.cmc case final value?) 'cmc': value,
       'color_identity':
           instance.colorIdentity.map((e) => _$ColorEnumMap[e]!).toList(),
       if (instance.colorIndicator?.map((e) => _$ColorEnumMap[e]!).toList()
@@ -309,7 +309,7 @@ Map<String, dynamic> _$MtgCardToJson(MtgCard instance) => <String, dynamic>{
         'produced_mana': value,
       'reserved': instance.reserved,
       if (instance.toughness case final value?) 'toughness': value,
-      'type_line': instance.typeLine,
+      if (instance.typeLine case final value?) 'type_line': value,
       if (instance.artist case final value?) 'artist': value,
       if (instance.artistIds case final value?) 'artist_ids': value,
       if (instance.attractionLights case final value?)
