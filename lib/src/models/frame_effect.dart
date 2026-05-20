@@ -12,8 +12,8 @@ enum FrameEffect {
   /// The miracle frame effect.
   miracle,
 
-  /// The Nyx-touched frame effect.
-  nyxtouched,
+  /// The enchantment frame effect.
+  enchantment,
 
   /// The draft-matters frame effect.
   draft,
@@ -78,6 +78,14 @@ enum FrameEffect {
   /// The cards have Spree asterisks.
   spree,
 
+  /// A full art frame.
+  fullart,
+
   /// Unknown frame effect.
-  unknown,
+  unknown;
+
+  // coverage:ignore-start
+  @Deprecated('Use `enchantment` instead. Will be removed with version 3.0')
+  static const nyxtouched = FrameEffect.enchantment;
+  // coverage:ignore-end
 }

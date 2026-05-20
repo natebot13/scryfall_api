@@ -31,7 +31,11 @@ MtgCard _$MtgCardFromJson(Map<String, dynamic> json) => $checkedCreate(
               'tcgplayer_etched_id', (v) => (v as num?)?.toInt()),
           cardmarketId:
               $checkedConvert('cardmarket_id', (v) => (v as num?)?.toInt()),
-          oracleId: $checkedConvert('oracle_id', (v) => v as String?),
+          oracleId: $checkedConvert(
+            'oracle_id',
+            (v) => v as String,
+            readValue: _readValueFromCardFaceIfReversibleCard,
+          ),
           printsSearchUri: $checkedConvert(
               'prints_search_uri', (v) => Uri.parse(v as String)),
           rulingsUri:
@@ -49,7 +53,11 @@ MtgCard _$MtgCardFromJson(Map<String, dynamic> json) => $checkedCreate(
               (v) => (v as List<dynamic>?)
                   ?.map((e) => CardFace.fromJson(e as Map<String, dynamic>))
                   .toList()),
-          cmc: $checkedConvert('cmc', (v) => (v as num?)?.toDouble()),
+          cmc: $checkedConvert(
+            'cmc',
+            (v) => (v as num).toDouble(),
+            readValue: _readValueFromCardFaceIfReversibleCard,
+          ),
           colorIdentity: $checkedConvert(
               'color_identity',
               (v) => (v as List<dynamic>)
@@ -70,6 +78,7 @@ MtgCard _$MtgCardFromJson(Map<String, dynamic> json) => $checkedCreate(
                   .toList()),
           edhrecRank:
               $checkedConvert('edhrec_rank', (v) => (v as num?)?.toInt()),
+          gameChanger: $checkedConvert('game_changer', (v) => v as bool?),
           handModifier: $checkedConvert('hand_modifier', (v) => v as String?),
           keywords: $checkedConvert('keywords',
               (v) => (v as List<dynamic>).map((e) => e as String).toList()),
@@ -84,6 +93,7 @@ MtgCard _$MtgCardFromJson(Map<String, dynamic> json) => $checkedCreate(
           manaCost: $checkedConvert('mana_cost', (v) => v as String?),
           name: $checkedConvert('name', (v) => v as String),
           oracleText: $checkedConvert('oracle_text', (v) => v as String?),
+          pennyRank: $checkedConvert('penny_rank', (v) => (v as num?)?.toInt()),
           oversized: $checkedConvert('oversized', (v) => v as bool),
           power: $checkedConvert('power', (v) => v as String?),
           producedMana: $checkedConvert(
@@ -94,7 +104,11 @@ MtgCard _$MtgCardFromJson(Map<String, dynamic> json) => $checkedCreate(
                   .toList()),
           reserved: $checkedConvert('reserved', (v) => v as bool),
           toughness: $checkedConvert('toughness', (v) => v as String?),
-          typeLine: $checkedConvert('type_line', (v) => v as String?),
+          typeLine: $checkedConvert(
+            'type_line',
+            (v) => v as String,
+            readValue: _readValueFromCardFaceIfReversibleCard,
+          ),
           artist: $checkedConvert('artist', (v) => v as String?),
           artistIds: $checkedConvert('artist_ids',
               (v) => (v as List<dynamic>?)?.map((e) => e as String).toList()),
@@ -224,10 +238,12 @@ MtgCard _$MtgCardFromJson(Map<String, dynamic> json) => $checkedCreate(
         'colorIdentity': 'color_identity',
         'colorIndicator': 'color_indicator',
         'edhrecRank': 'edhrec_rank',
+        'gameChanger': 'game_changer',
         'handModifier': 'hand_modifier',
         'lifeModifier': 'life_modifier',
         'manaCost': 'mana_cost',
         'oracleText': 'oracle_text',
+        'pennyRank': 'penny_rank',
         'producedMana': 'produced_mana',
         'typeLine': 'type_line',
         'artistIds': 'artist_ids',
@@ -293,6 +309,7 @@ Map<String, dynamic> _$MtgCardToJson(MtgCard instance) => <String, dynamic>{
           case final value?)
         'colors': value,
       if (instance.edhrecRank case final value?) 'edhrec_rank': value,
+      if (instance.gameChanger case final value?) 'game_changer': value,
       if (instance.handModifier case final value?) 'hand_modifier': value,
       'keywords': instance.keywords,
       'layout': _$LayoutEnumMap[instance.layout]!,
@@ -302,6 +319,7 @@ Map<String, dynamic> _$MtgCardToJson(MtgCard instance) => <String, dynamic>{
       if (instance.manaCost case final value?) 'mana_cost': value,
       'name': instance.name,
       if (instance.oracleText case final value?) 'oracle_text': value,
+      if (instance.pennyRank case final value?) 'penny_rank': value,
       'oversized': instance.oversized,
       if (instance.power case final value?) 'power': value,
       if (instance.producedMana?.map((e) => _$ColorEnumMap[e]!).toList()
@@ -449,7 +467,7 @@ const _$FinishEnumMap = {
 const _$FrameEffectEnumMap = {
   FrameEffect.legendary: 'legendary',
   FrameEffect.miracle: 'miracle',
-  FrameEffect.nyxtouched: 'nyxtouched',
+  FrameEffect.enchantment: 'enchantment',
   FrameEffect.draft: 'draft',
   FrameEffect.devoid: 'devoid',
   FrameEffect.tombstone: 'tombstone',
@@ -471,6 +489,7 @@ const _$FrameEffectEnumMap = {
   FrameEffect.fandfc: 'fandfc',
   FrameEffect.upsidedowndfc: 'upsidedowndfc',
   FrameEffect.spree: 'spree',
+  FrameEffect.fullart: 'fullart',
   FrameEffect.unknown: 'unknown',
 };
 
@@ -487,6 +506,8 @@ const _$GameEnumMap = {
   Game.paper: 'paper',
   Game.arena: 'arena',
   Game.mtgo: 'mtgo',
+  Game.astral: 'astral',
+  Game.sega: 'sega',
   Game.unknown: 'unknown',
 };
 

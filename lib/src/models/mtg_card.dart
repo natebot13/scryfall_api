@@ -89,7 +89,8 @@ class MtgCard {
   /// This value is consistent across reprinted card editions,
   /// and unique among different cards with the same name (tokens,
   /// Unstable variants, etc).
-  final String? oracleId;
+  @JsonKey(readValue: _readValueFromCardFaceIfReversibleCard)
+  final String oracleId;
 
   /// A link to where you can begin paginating all re/prints for
   /// this card on Scryfall’s API.
@@ -114,7 +115,8 @@ class MtgCard {
 
   /// The card’s converted mana cost. Note that some funny cards
   /// have fractional mana costs.
-  final double? cmc;
+  @JsonKey(readValue: _readValueFromCardFaceIfReversibleCard)
+  final double cmc;
 
   /// This card’s color identity.
   @JsonKey(unknownEnumValue: Color.unknown)
@@ -137,6 +139,9 @@ class MtgCard {
   ///
   /// Not all cards are ranked.
   final int? edhrecRank;
+
+  /// True if this card is on the [Commander Game Changer list](https://mtg.wiki/page/Commander_(format)/Game_Changers).
+  final bool? gameChanger;
 
   /// This card’s hand modifier, if it is Vanguard card.
   ///
@@ -182,6 +187,11 @@ class MtgCard {
   /// The Oracle text for this card, if any.
   final String? oracleText;
 
+  /// This card’s rank/popularity on Penny Dreadful.
+  ///
+  /// Not all cards are ranked.
+  final int? pennyRank;
+
   /// True if this card is oversized.
   final bool oversized;
 
@@ -203,7 +213,8 @@ class MtgCard {
   final String? toughness;
 
   /// The type line of this card.
-  final String? typeLine;
+  @JsonKey(readValue: _readValueFromCardFaceIfReversibleCard)
+  final String typeLine;
 
   /// The name of the illustrator of this card.
   ///
@@ -398,6 +409,7 @@ class MtgCard {
     this.colorIndicator,
     this.colors,
     this.edhrecRank,
+    this.gameChanger,
     this.handModifier,
     required this.keywords,
     required this.layout,
@@ -407,6 +419,7 @@ class MtgCard {
     this.manaCost,
     required this.name,
     this.oracleText,
+    this.pennyRank,
     required this.oversized,
     this.power,
     this.producedMana,
@@ -475,8 +488,41 @@ class MtgCard {
     'Use `tcgplayerEtchedId` instead. Will be removed with version 3.0',
   )
   int? get tcgplyerEtchedId => tcgplayerEtchedId;
+
+  @Deprecated(
+    'Use `promoTypes` instead. Will be removed with version 3.0',
+  )
+  List<String>? get promoType => promoTypes;
   // coverage:ignore-end
 
   /// Converts a [MtgCard] to JSON.
   Map<String, dynamic> toJson() => _$MtgCardToJson(this);
+}
+
+/// Returns a JSON value, falling back to card faces for reversible cards.
+///
+/// For `reversible_card` layouts, some attributes may be missing at the
+/// top level and only present on each card face. When this happens, the
+/// unique value shared by all card faces is returned.
+///
+/// If the value exists at the top level or the card is not reversible,
+/// the top-level value is returned. Returns `null` if no unique value
+/// can be determined.
+Object? _readValueFromCardFaceIfReversibleCard(Map json, String name) {
+  if (json.containsKey(name) ||
+      json['layout'] != _$LayoutEnumMap[Layout.reversibleCard]) {
+    return json[name];
+  }
+
+  final cardFaces = json['card_faces'];
+
+  if (cardFaces is! List) {
+    return null;
+  }
+
+  return cardFaces
+      .cast<Map>()
+      .map((cardFace) => cardFace[name])
+      .toSet()
+      .singleOrNull;
 }
